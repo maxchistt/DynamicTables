@@ -5,11 +5,11 @@ namespace ConsoleDTApp
 {
     internal class Program
     {
-        static TableConsole consoleApp;
+        static DTAppController consoleApp;
         private static void Main(string[] args)
         {
             Console.WriteLine("DTServiceTestApp");
-            consoleApp = new TableConsole();
+            consoleApp = new DTAppController();
         }
     }
 }
