@@ -3,7 +3,7 @@
     internal partial class DTAppController
     {
         private enum todoMain
-        { ChooseTable, CreateTable, EditTable, ShowTablesList, QueryTable };
+        { ShowTablesList, ShowTableHeader, QueryTable, CreateTable, EditTable };
 
         public bool chooseToDoMain()
         {
@@ -15,10 +15,8 @@
                     view.printMsg(createTable() ? "Table creted" : "No table created");
                     break;
 
-                case todoMain.ChooseTable:
-                    view.printMsg(chooseTable()
-                        ? $"Chosen table is '{chosenTable}':\n{string.Join(" | ", dtManager.Scaner.getColsKeysAndTypes(chosenTable))}"
-                        : "No table chosen");
+                case todoMain.ShowTableHeader:
+                    showTableHeader();
                     break;
 
                 case todoMain.ShowTablesList:
@@ -38,6 +36,13 @@
                     return false;
             }
             return true;
+        }
+
+        public void showTableHeader()
+        {
+            view.printMsg(chooseTable()
+                        ? $"Header of '{chosenTable}':\n{string.Join(" | ", dtManager.Scaner.getColsKeysAndTypes(chosenTable))}"
+                        : "No table chosen");
         }
 
         public void showTablesList()
