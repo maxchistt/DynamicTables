@@ -30,6 +30,12 @@ namespace ConsoleDTApp
         {
             var tabnames = dtManager.Scaner.getTablesNames();
 
+            if(tabnames.Count == 0)
+            {
+                Console.WriteLine("No tables, create one");
+                return false;
+            }
+
             var input = getChose(tabnames.ToArray(), "Chose table to interact");
 
             if (input != null && tabnames.Contains(input))
