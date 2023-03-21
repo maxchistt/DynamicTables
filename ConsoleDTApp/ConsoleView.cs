@@ -7,7 +7,7 @@
             Console.WriteLine(msg);
         }
 
-        public T? getChoseEnum<T>(string? question = null) where T : struct, IConvertible
+        public T? getChoiceEnum<T>(string? question = null) where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum)
             {
@@ -15,15 +15,15 @@
             }
             else
             {
-                string choseRes = getChose(Enum.GetNames(typeof(T)), question);
-                if (choseRes == null || choseRes == "") return null;
-                return (T)Enum.Parse(typeof(T), choseRes, true);
+                string choiceRes = getChoice(Enum.GetNames(typeof(T)), question);
+                if (choiceRes == null || choiceRes == "") return null;
+                return (T)Enum.Parse(typeof(T), choiceRes, true);
             }
         }
 
         private readonly List<char> keyList = new() { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm' };
 
-        public string getChose(string[] variants, string? question = null)
+        public string getChoice(string[] variants, string? question = null)
         {
             Console.WriteLine();
             if (question != null) Console.WriteLine(question);
@@ -31,12 +31,12 @@
             if (variants.Length == 0 || variants.Length > keyList.Count)
             {
                 Console.WriteLine(variants.Length > 0
-                    ? $"It need be not more {keyList.Count} variants for getChose(string[] variants, ...)"
-                    : "No variants to chose");
+                    ? $"It need be not more {keyList.Count} variants for getChoice(string[] variants, ...)"
+                    : "No variants to choose");
                 return "";
             }
 
-            string varlist = "Press key to chose variant:\n";
+            string varlist = "Press key to choose variant:\n";
             for (int i = 0; i < variants.Length; i++)
             {
                 varlist += $"{keyList[i]}. {variants[i]}\n";

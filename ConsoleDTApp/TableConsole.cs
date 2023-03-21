@@ -9,21 +9,21 @@ namespace ConsoleDTApp
         private ConsoleView view = new();
 
         private enum todo
-        { ChoseTable, CreateTable, ShowTablesList };
+        { ChooseTable, CreateTable, ShowTablesList };
 
         public TableConsole()
         {
             while (true)
             {
-                var todoRes = view.getChoseEnum<todo>("Chose what to do");
+                var todoRes = view.getChoiceEnum<todo>("Chose what to do");
                 switch (todoRes)
                 {
                     case todo.CreateTable:
                         view.printMsg(createTable() ? "Table creted" : "No table created");
                         break;
 
-                    case todo.ChoseTable:
-                        view.printMsg(choseTable() ? $"Chosen table is '{chosenTable}'" : "No table chosen");
+                    case todo.ChooseTable:
+                        view.printMsg(chooseTable() ? $"Chosen table is '{chosenTable}'" : "No table chosen");
                         break;
 
                     case todo.ShowTablesList:
@@ -53,7 +53,7 @@ namespace ConsoleDTApp
             return true;
         }
 
-        public bool choseTable()
+        public bool chooseTable()
         {
             var tabnames = dtManager.Scaner.getTablesNames();
             if (tabnames.Count == 0)
@@ -62,7 +62,7 @@ namespace ConsoleDTApp
                 return false;
             }
 
-            var input = view.getChose(tabnames.ToArray(), "Chose table to interact");
+            var input = view.getChoice(tabnames.ToArray(), "Choose table to interact");
             if (input != null && tabnames.Contains(input))
             {
                 chosenTable = input;
