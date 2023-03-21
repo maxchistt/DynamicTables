@@ -1,11 +1,4 @@
 ﻿using DynamicTableService;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleDTApp
 {
@@ -15,8 +8,8 @@ namespace ConsoleDTApp
         private string chosenTable = "";
         private ConsoleView view = new();
 
-
-        private enum todo { ChoseTable, CreateTable, ShowTablesList };
+        private enum todo
+        { ChoseTable, CreateTable, ShowTablesList };
 
         public TableConsole()
         {
@@ -28,12 +21,15 @@ namespace ConsoleDTApp
                     case todo.CreateTable:
                         view.printMsg(createTable() ? "Table creted" : "No table created");
                         break;
+
                     case todo.ChoseTable:
                         view.printMsg(choseTable() ? $"Chosen table is '{chosenTable}'" : "No table chosen");
                         break;
+
                     case todo.ShowTablesList:
                         showTablesList();
                         break;
+
                     default:
                         view.printMsg("Nothing chosen to do");
                         break;
@@ -60,7 +56,6 @@ namespace ConsoleDTApp
         public bool choseTable()
         {
             var tabnames = dtManager.Scaner.getTablesNames();
-
             if (tabnames.Count == 0)
             {
                 view.printMsg("No tables, create one");
@@ -68,7 +63,6 @@ namespace ConsoleDTApp
             }
 
             var input = view.getChose(tabnames.ToArray(), "Chose table to interact");
-
             if (input != null && tabnames.Contains(input))
             {
                 chosenTable = input;
@@ -76,7 +70,5 @@ namespace ConsoleDTApp
             }
             return false;
         }
-
-        
     }
 }

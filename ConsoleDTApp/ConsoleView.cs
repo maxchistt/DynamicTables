@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConsoleDTApp
+﻿namespace ConsoleDTApp
 {
     internal class ConsoleView
     {
@@ -22,45 +16,35 @@ namespace ConsoleDTApp
             else
             {
                 string choseRes = getChose(Enum.GetNames(typeof(T)), question);
-
                 if (choseRes == null || choseRes == "") return null;
-
                 return (T)Enum.Parse(typeof(T), choseRes, true);
             }
         }
 
+        private readonly List<char> keyList = new() { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm' };
+
         public string getChose(string[] variants, string? question = null)
         {
             Console.WriteLine();
-            if (variants.Length > 10)
-            {
-                Console.WriteLine("It need be not more 10 variants for getChose(string[] variants, ...)");
-                return "";
-            }
-
             if (question != null) Console.WriteLine(question);
 
-            if (variants.Length == 0)
+            if (variants.Length == 0 || variants.Length > keyList.Count)
             {
-                Console.WriteLine("No variants to chose");
+                Console.WriteLine(variants.Length > 0
+                    ? $"It need be not more {keyList.Count} variants for getChose(string[] variants, ...)"
+                    : "No variants to chose");
                 return "";
             }
+
             string varlist = "Press key to chose variant:\n";
             for (int i = 0; i < variants.Length; i++)
             {
-                varlist += $"{i + 1}. {variants[i]}\n";
+                varlist += $"{keyList[i]}. {variants[i]}\n";
             }
             Console.WriteLine(varlist);
 
             var input = Console.ReadKey(true);
-            int Num;
-            if (int.TryParse(input.KeyChar.ToString(), out Num))
-            {
-                if (Num == 0) Num = 10;
-                Num--;
-
-                if (Num < variants.Length && Num >= 0) return variants[Num];
-            }
+            if (keyList.Contains(input.KeyChar)) return variants[keyList.IndexOf(input.KeyChar)];
             return "";
         }
 
