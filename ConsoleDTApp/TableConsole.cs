@@ -15,26 +15,33 @@ namespace ConsoleDTApp
         {
             while (true)
             {
-                var todoRes = view.getChoiceEnum<todo>("Chose what to do");
-                switch (todoRes)
-                {
-                    case todo.CreateTable:
-                        view.printMsg(createTable() ? "Table creted" : "No table created");
-                        break;
-
-                    case todo.ChooseTable:
-                        view.printMsg(chooseTable() ? $"Chosen table is '{chosenTable}'" : "No table chosen");
-                        break;
-
-                    case todo.ShowTablesList:
-                        showTablesList();
-                        break;
-
-                    default:
-                        view.printMsg("Nothing chosen to do");
-                        break;
-                }
+                chooseToDoMain();
             }
+        }
+
+        public bool chooseToDoMain()
+        {
+            var todoRes = view.getChoiceEnum<todo>("Chose what to do");
+            if (todoRes == null) return false;
+            switch (todoRes)
+            {
+                case todo.CreateTable:
+                    view.printMsg(createTable() ? "Table creted" : "No table created");
+                    break;
+
+                case todo.ChooseTable:
+                    view.printMsg(chooseTable() ? $"Chosen table is '{chosenTable}'" : "No table chosen");
+                    break;
+
+                case todo.ShowTablesList:
+                    showTablesList();
+                    break;
+
+                default:
+                    view.printMsg("Nothing chosen to do");
+                    return false;
+            }
+            return true;
         }
 
         public void showTablesList()
