@@ -44,7 +44,8 @@
             Console.WriteLine(varlist);
 
             var input = Console.ReadKey(true);
-            if (keyList.Contains(input.KeyChar)) return variants[keyList.IndexOf(input.KeyChar)];
+            if (keyList.Contains(input.KeyChar) && keyList.IndexOf(input.KeyChar) < variants.Length)
+                return variants[keyList.IndexOf(input.KeyChar)];
             return "";
         }
 
