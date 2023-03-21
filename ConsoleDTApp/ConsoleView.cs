@@ -18,24 +18,15 @@ namespace ConsoleDTApp
             if (!typeof(T).IsEnum)
             {
                 throw new ArgumentException("T must be an enumerated type");
-                return null;
             }
             else
             {
-                List<string> variantNames = new();
-                foreach (string variant in Enum.GetNames(typeof(T)))
-                {
-                    variantNames.Add(variant);
-                }
-                string choseRes = getChose(variantNames.ToArray(), question);
+                string choseRes = getChose(Enum.GetNames(typeof(T)), question);
 
                 if (choseRes == null || choseRes == "") return null;
 
-                T enumRes = (T)Enum.Parse(typeof(T), choseRes, true);
-
-                return enumRes;
+                return (T)Enum.Parse(typeof(T), choseRes, true);
             }
-            return null;
         }
 
         public string getChose(string[] variants, string? question = null)
