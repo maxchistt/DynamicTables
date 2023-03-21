@@ -10,14 +10,19 @@ namespace ConsoleDTApp
 {
     internal class TableConsole
     {
-        DynamicTableManager dtManager = new();
-        string chosenTable = "";
-        
-        public TableConsole() {
+        private DynamicTableManager dtManager = new();
+        private string chosenTable = "";
+
+        public TableConsole()
+        {
             bool res = choseTable();
             if (res)
             {
-                
+                Console.WriteLine($"Chosen table is: '{chosenTable}'");
+            }
+            else
+            {
+                Console.WriteLine("No chosen table");
             }
         }
 
@@ -25,10 +30,7 @@ namespace ConsoleDTApp
         {
             var tabnames = dtManager.Scaner.getTablesNames();
 
-            var tabsStr = JsonConvert.SerializeObject(tabnames);
-
-            Console.WriteLine($"Here is the list of tables: {tabsStr}. \nChose name of table you need:");
-            var input = Console.ReadLine();
+            var input = getChose(tabnames.ToArray(), "Chose table to interact");
 
             if (input != null && tabnames.Contains(input))
             {
@@ -36,6 +38,23 @@ namespace ConsoleDTApp
                 return true;
             }
             return false;
+        }
+
+        private string getChose(string[] variants, string? question)
+        {
+            if (question != null) Console.WriteLine(question);
+            string varlist = "Press key to chose variant:\n";
+            for (int i = 0; i < variants.Length; i++)
+            {
+                varlist += $"{i}. {variants[i]}";
+            }
+            var input = Console.ReadKey(true);
+            int Num;
+            if (
+             int.TryParse(input.KeyChar.ToString(), out Num)
+             && Num < variants.Length && Num >= 0
+            ) return variants[Num];
+            return "";
         }
     }
 }
