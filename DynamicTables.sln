@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicTableService", "DynamicTableService\DynamicTableService.csproj", "{D00E0749-0520-4710-BE99-9A8911E45930}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleDTApp", "ConsoleDTApp\ConsoleDTApp.csproj", "{C27195E3-7672-4BF7-BB41-F80F0372BF82}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D00E0749-0520-4710-BE99-9A8911E45930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D00E0749-0520-4710-BE99-9A8911E45930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D00E0749-0520-4710-BE99-9A8911E45930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D00E0749-0520-4710-BE99-9A8911E45930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C27195E3-7672-4BF7-BB41-F80F0372BF82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C27195E3-7672-4BF7-BB41-F80F0372BF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C27195E3-7672-4BF7-BB41-F80F0372BF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C27195E3-7672-4BF7-BB41-F80F0372BF82}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {860C3F6C-00BB-42CB-AE4B-AB94B480C782}
+	EndGlobalSection
+EndGlobal
