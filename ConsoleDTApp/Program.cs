@@ -1,11 +1,9 @@
-﻿using DynamicTableService;
-using Newtonsoft.Json;
-
-namespace ConsoleDTApp
+﻿namespace ConsoleDTApp
 {
     internal class Program
     {
-        static DTAppController consoleApp;
+        private static DTAppController consoleApp;
+
         private static void Main(string[] args)
         {
             Console.WriteLine("DTServiceTestApp");
