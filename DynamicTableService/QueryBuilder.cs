@@ -1,4 +1,6 @@
-﻿namespace DynamicTableService
+﻿using System.Text.RegularExpressions;
+
+namespace DynamicTableService
 {
     public struct WhereCondition
     {
@@ -155,7 +157,7 @@ namespace DynamicTableService.Components
         {
             string columns = string.Join(", ", _values.Keys);
             string values = string.Join(", ", _values.Values.Select(GetValueString));
-            return $"INSERT INTO {_tableName} ({columns}) VALUES ({values})";
+            return $@"INSERT INTO {_tableName} ({columns}) VALUES ({values})";
         }
 
         private string BuildDelete()
@@ -168,7 +170,7 @@ namespace DynamicTableService.Components
         {
             if (value is string)
             {
-                return $"'{value}'";
+                return Regex.IsMatch(value.ToString(), @"\p{IsCyrillic}") ? $"N'{value}'" : $"'{value}'";
             }
             else if (value is null)
             {
@@ -176,7 +178,7 @@ namespace DynamicTableService.Components
             }
             else
             {
-                return value.ToString();
+                return value.ToString().Replace(',', '.');
             }
         }
 
