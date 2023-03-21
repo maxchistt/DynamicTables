@@ -49,7 +49,7 @@
         {
             var tabnames = dtManager.Scaner.getTablesNames();
             view.printMsg(tabnames.Count > 0
-                ? $"Here is the list of tables:\n {string.Join(", ", tabnames)}"
+                ? $"Here is the list of tables:\n{string.Join(", ", tabnames)}"
                 : "No tables in Db");
         }
 
