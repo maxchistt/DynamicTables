@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicTableService", "Dyna
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleDTApp", "ConsoleDTApp\ConsoleDTApp.csproj", "{C27195E3-7672-4BF7-BB41-F80F0372BF82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicTableService.SqlKataQuerier", "DynamicTableService.SqlKataQuerier\DynamicTableService.SqlKataQuerier.csproj", "{554A1664-97E0-41E4-9C31-383F7ADACBF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C27195E3-7672-4BF7-BB41-F80F0372BF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C27195E3-7672-4BF7-BB41-F80F0372BF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C27195E3-7672-4BF7-BB41-F80F0372BF82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{554A1664-97E0-41E4-9C31-383F7ADACBF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{554A1664-97E0-41E4-9C31-383F7ADACBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{554A1664-97E0-41E4-9C31-383F7ADACBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{554A1664-97E0-41E4-9C31-383F7ADACBF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
