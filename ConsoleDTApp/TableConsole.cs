@@ -43,6 +43,11 @@ namespace ConsoleDTApp
         private string getChose(string[] variants, string? question)
         {
             if (question != null) Console.WriteLine(question);
+            if (variants.Length == 0)
+            {
+                Console.WriteLine("No variants to chose");
+                return "";
+            }
             string varlist = "Press key to chose variant:\n";
             for (int i = 0; i < variants.Length; i++)
             {
@@ -53,7 +58,10 @@ namespace ConsoleDTApp
             if (
              int.TryParse(input.KeyChar.ToString(), out Num)
              && Num < variants.Length && Num >= 0
-            ) return variants[Num];
+            )
+            {
+                return variants[Num];
+            }
             return "";
         }
     }
