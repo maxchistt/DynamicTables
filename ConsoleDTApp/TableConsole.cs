@@ -13,7 +13,8 @@ namespace ConsoleDTApp
         { ChooseTable, CreateTable, EditTable, ShowTablesList, QueryTable };
 
         private enum todoEditTable
-        { RenameTable, AddColumn, EditColumn, RenameColumn, AddPrimaryKey, AddPriamryKeys, DropTable, DropColumn, DropPrimaryKeys };
+        { AddColumn };
+        //{ RenameTable, AddColumn, EditColumn, RenameColumn, AddPrimaryKey, AddPriamryKeys, DropTable, DropColumn, DropPrimaryKeys };
 
         private enum todoQueryTable
         { ShowTable, AddRow };
