@@ -14,12 +14,18 @@
         public void CreateTable(string tableName)
         {
             string sqlExpression = $@"
-            IF (NOT EXISTS (SELECT *
-               FROM INFORMATION_SCHEMA.TABLES
-               WHERE TABLE_SCHEMA = 'dbo'
-               AND TABLE_NAME = '{tableName}'))
+            IF (NOT EXISTS 
+                (
+                    SELECT *
+                    FROM INFORMATION_SCHEMA.TABLES
+                    WHERE TABLE_SCHEMA = 'dbo'
+                    AND TABLE_NAME = '{tableName}'
+                )
+               )
                BEGIN
-                    CREATE TABLE [dbo].[{tableName}] ();
+                    CREATE TABLE [dbo].[{tableName}] (
+                    	[Id] INT NOT NULL PRIMARY KEY
+                    );
                END;
             ";
 
