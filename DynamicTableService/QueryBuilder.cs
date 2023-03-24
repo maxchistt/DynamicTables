@@ -4,6 +4,16 @@ namespace DynamicTableService
 {
     public struct WhereCondition
     {
+
+        private static Dictionary<ConditionOperator, string> ConditionOperatorsStrings = new(){
+            { ConditionOperator.Equal, "="},
+            { ConditionOperator.GreaterThan, ">"},
+            { ConditionOperator.LessThan, "<"},
+            { ConditionOperator.GreaterThanOrEqual, ">="},
+            { ConditionOperator.LessThanOrEqual, "<="},
+            { ConditionOperator.NotEqual, "!="},
+        };
+
         public enum ConditionOperator
         { Equal, GreaterThan, LessThan, GreaterThanOrEqual, LessThanOrEqual, NotEqual }
 
@@ -11,25 +21,23 @@ namespace DynamicTableService
         private object _value;
         private ConditionOperator _operator = ConditionOperator.Equal;
 
-        public WhereCondition(string column, object value, ConditionOperator op = ConditionOperator.Equal)
+        public WhereCondition(string column, ConditionOperator op, object value)
         {
             _column = column;
             _value = value;
             _operator = op;
         }
 
+        public WhereCondition(string column, string conditionOperator, object value)
+        {
+            _column = column;
+            _value = value;
+            _operator = ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key;
+        }
+
         private static string OperatorToString(ConditionOperator _operator)
         {
-            switch (_operator)
-            {
-                case ConditionOperator.Equal: return "=";
-                case ConditionOperator.GreaterThan: return ">";
-                case ConditionOperator.LessThan: return "<";
-                case ConditionOperator.GreaterThanOrEqual: return ">=";
-                case ConditionOperator.LessThanOrEqual: return "<=";
-                case ConditionOperator.NotEqual: return "!=";
-                default: return "=";
-            }
+            return ConditionOperatorsStrings[_operator];
         }
 
         public new string ToString()
@@ -109,7 +117,12 @@ namespace DynamicTableService.Components
 
         public QueryBuilder Where(string column, WhereCondition.ConditionOperator conditionOperator, object conditionValue)
         {
-            return Where(new WhereCondition(column, conditionValue, conditionOperator).ToString());
+            return Where(new WhereCondition(column, conditionOperator, conditionValue).ToString());
+        }
+
+        public QueryBuilder Where(string column, string conditionOperator, object conditionValue)
+        {
+            return Where(new WhereCondition(column, conditionOperator, conditionValue).ToString());
         }
 
         public QueryBuilder OrderBy(string column)
