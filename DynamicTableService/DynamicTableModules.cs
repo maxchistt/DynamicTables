@@ -5,20 +5,20 @@ using System.Data.SqlClient;
 
 namespace DynamicTableService
 {
-    public class DynamicTableManager
+    public class DynamicTableModules
     {
         public readonly DTBuilder Builder;
         public readonly DTScaner Scaner;
         public readonly DTQuerier Querier;
 
-        public DynamicTableManager(string connectionString)
+        public DynamicTableModules(string connectionString)
         {
             Builder = new DTBuilder(connectionString);
             Scaner = new DTScaner(connectionString);
             Querier = new DTQuerier(connectionString);
         }
 
-        public DynamicTableManager() : this(getConnectionStringFromConfig()){ }
+        public DynamicTableModules() : this(getConnectionStringFromConfig()){ }
 
         private static string getConnectionStringFromConfig()
         {

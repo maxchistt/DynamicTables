@@ -4,7 +4,7 @@ namespace ConsoleDTApp
 {
     internal partial class DTAppController
     {
-        private DynamicTableManager dtManager = new();
+        private DynamicTableModules dtManager = new();
         private string chosenTable = "";
         private ConsoleView view = new();
 
