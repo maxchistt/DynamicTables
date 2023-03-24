@@ -96,9 +96,9 @@ namespace DynamicTableService.Components
             return this;
         }
 
-        private QueryBuilder Where(string condition)
+        public QueryBuilder Where(string sql_full_condition)
         {
-            _whereConditions.Add(condition);
+            _whereConditions.Add(sql_full_condition);
             return this;
         }
 
