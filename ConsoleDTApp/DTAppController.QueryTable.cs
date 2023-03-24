@@ -45,8 +45,7 @@ namespace ConsoleDTApp
 
         public void showTable()
         {
-            dtManager.Querier.setTable(chosenTable);
-            var table = dtManager.Querier.Select();
+            var table = dtManager.Querier.Select(chosenTable);
 
             string tableStr = $"Table '{chosenTable}'\n";
             table.ForEach(row =>
@@ -58,7 +57,6 @@ namespace ConsoleDTApp
 
         public bool addRow()
         {
-            dtManager.Querier.setTable(chosenTable);
             Dictionary<string, object> row = new();
             var colsKeysAndTypes = dtManager.Scaner.getColsKeysAndCSTypes(chosenTable);
             foreach (var col in colsKeysAndTypes)
@@ -98,7 +96,7 @@ namespace ConsoleDTApp
             view.printMsg("Row:\n" + string.Join(" | ", row));
             if (view.getChoice(new[] { "Insert row", "Dont insert row" }) == "Insert row")
             {
-                dtManager.Querier.Insert(row);
+                dtManager.Querier.Insert(chosenTable, row);
                 return true;
             }
             return false;

@@ -9,39 +9,29 @@
             queryBuilder = new QueryBuilder(connectionString);
         }
 
-        public DTQuerier(string connectionString, string tableName) : this(connectionString)
+        public void Insert(string tableName, Dictionary<string, object> values)
         {
-            setTable(tableName);
-        }
-
-        public void setTable(string tableName)
-        {
-            queryBuilder.Table(tableName);
-        }
-
-        public void Insert(Dictionary<string, object> values)
-        {
-            queryBuilder.ResetOptions().Insert(values);
+            queryBuilder.ResetOptions().Table(tableName).Insert(values);
             executeSQL(queryBuilder.Build());
         }
 
-        public void Update(Dictionary<string, object> values, List<WhereCondition>? whereConditions = null)
+        public void Update(string tableName, Dictionary<string, object> values, List<WhereCondition>? whereConditions = null)
         {
-            queryBuilder.ResetOptions().Update(values);
+            queryBuilder.ResetOptions().Table(tableName).Update(values);
             if (whereConditions != null) whereConditions.ForEach(condition => queryBuilder.Where(condition));
             executeSQL(queryBuilder.Build());
         }
 
-        public void Delete(List<WhereCondition> whereConditions)
+        public void Delete(string tableName, List<WhereCondition> whereConditions)
         {
-            queryBuilder.ResetOptions().Delete();
+            queryBuilder.ResetOptions().Table(tableName).Delete();
             whereConditions.ForEach(condition => queryBuilder.Where(condition));
             executeSQL(queryBuilder.Build());
         }
 
-        public List<Dictionary<string, object>> Select(List<string>? columnNames = null, List<WhereCondition>? whereConditions = null, string? orderByColumnName = null)
+        public List<Dictionary<string, object>> Select(string tableName, List<string>? columnNames = null, List<WhereCondition>? whereConditions = null, string? orderByColumnName = null)
         {
-            queryBuilder.ResetOptions().Select(columnNames?.ToArray() ?? new string[0]);
+            queryBuilder.ResetOptions().Table(tableName).Select(columnNames?.ToArray() ?? new string[0]);
             if (whereConditions != null) whereConditions.ForEach(condition => queryBuilder.Where(condition));
             if (orderByColumnName != null) queryBuilder.OrderBy(orderByColumnName);
             string sql = queryBuilder.Build();
