@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+
 namespace DynamicTableService
 {
     public enum ConditionOperator
@@ -17,37 +18,34 @@ namespace DynamicTableService
         };
 
         private string _column = "col1";
-        private object[] _values = new object[0];
+        private List<object> _values = new();
         private ConditionOperator _operator = ConditionOperator.Equal;
 
-        public WhereCondition(string column, ConditionOperator op, params object[] values)
+        public WhereCondition(string column, ConditionOperator op, object value, params object[] otherValues)
         {
             _column = column;
 
-            if (values.Length > 1)
+            if (otherValues.Length > 0)
             {
-                _values = values;
-            }
-            else if (values.Length == 1)
-            {
-                _values = this.GetObjectListFromObject(values[0]);
+                _values.Add(value);
+                _values.AddRange(otherValues);
             }
             else
             {
-                throw new Exception("No values in WHERE condition params");
+                _values.AddRange(GetObjectListFromObject(value));
             }
 
             _operator = op;
         }
 
-        public WhereCondition(string column, string conditionOperator, params object[] values) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, values.Length > 1 ? values : values.Length > 0 ? values.ElementAt(0) : new object[0]) { }
+        public WhereCondition(string column, string conditionOperator, object value, params object[] otherValues) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, value, otherValues) { }
 
         private string OperatorToString()
         {
             return ConditionOperatorsStrings[_operator];
         }
 
-        private object[] GetObjectListFromObject(object objVal)
+        private List<object> GetObjectListFromObject(object objVal)
         {
             var list = new List<object>();
 
@@ -71,7 +69,7 @@ namespace DynamicTableService
             }
 
             if (list.Count == 0) throw new Exception("No values in WHERE condition object[]");
-            return list.ToArray();
+            return list;
         }
 
         private string ValueToString()
@@ -80,10 +78,10 @@ namespace DynamicTableService
             switch (_operator)
             {
                 case ConditionOperator.In:
-
-                    if (_values.Length <= 1) throw new ArgumentException("Value should be enumerable or tuple if condition needs few values", "object value");
+                    if (_values.Count <= 1) throw new ArgumentException("Value should be enumerable or tuple if condition needs few values", "object value");
                     resStr = $"({string.Join(", ", _values.Select(Components.QueryBuilder.GetValueString))})";
                     break;
+
                 default:
                     resStr = Components.QueryBuilder.GetValueString(_values[0]);
                     break;
