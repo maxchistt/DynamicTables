@@ -3,7 +3,7 @@
 namespace DynamicTableService
 {
     public enum ConditionOperator
-    { Equal, GreaterThan, LessThan, GreaterThanOrEqual, LessThanOrEqual, NotEqual, In }
+    { Equal, GreaterThan, LessThan, GreaterThanOrEqual, LessThanOrEqual, NotEqual, In, Between }
 
     public struct WhereCondition
     {
@@ -15,6 +15,7 @@ namespace DynamicTableService
             { ConditionOperator.LessThanOrEqual, "<="},
             { ConditionOperator.NotEqual, "!="},
             { ConditionOperator.In, "IN"},
+            { ConditionOperator.Between,"BETWEEN"}
         };
 
         private string _column = "col1";
@@ -94,8 +95,13 @@ namespace DynamicTableService
             switch (_operator)
             {
                 case ConditionOperator.In:
-                    if (_values.Count <= 1) throw new ArgumentException("Value should be enumerable or tuple if condition needs few values", "object value");
+                    if (_values.Count < 2) throw new ArgumentException("WhereCondition needs few values");
                     resStr = $"({string.Join(", ", _values.Select(Components.QueryBuilder.GetValueString))})";
+                    break;
+
+                case ConditionOperator.Between:
+                    if (_values.Count < 2) throw new ArgumentException("WhereCondition needs few values");
+                    resStr = $"{_values[0]} AND {_values[1]}";
                     break;
 
                 default:
