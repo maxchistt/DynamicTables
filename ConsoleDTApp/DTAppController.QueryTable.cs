@@ -58,12 +58,18 @@ namespace ConsoleDTApp
             string chosenField = "*";
             while (chosenField != "")
             {
-                chosenField = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Chose fields to select. Press enter to end/skip selection.");
+                chosenField = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Chose field to select. Press enter to end/skip selection.");
                 if (chosenField != "")
                 {
                     if (columnNames == null) columnNames = new();
                     columnNames.Add(chosenField);
                     view.printMsg(string.Join(" & ", columnNames));
+
+                    if (view.getChoice(new string[] { "Yes", "No" }, "Add another field to select query?") != "Yes")
+                    {
+                        chosenField = "";
+                        break;
+                    }
                 }
             }
 
