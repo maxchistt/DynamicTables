@@ -74,6 +74,7 @@ namespace DynamicTableService.Components
             return Where(condition.ToString());
         }
 
+        /*
         public QueryBuilder Where(string column, ConditionOperator conditionOperator, object conditionValue)
         {
             return Where(new WhereCondition(column, conditionOperator, conditionValue).ToString());
@@ -83,6 +84,7 @@ namespace DynamicTableService.Components
         {
             return Where(new WhereCondition(column, conditionOperator, conditionValue).ToString());
         }
+        */
 
         public QueryBuilder GroupBy(string column)
         {
