@@ -1,5 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 
+namespace DynamicTableService
+{
+    public enum SelectFunction
+    { Count, Avg, Sum, Min, Max }
+}
+
 namespace DynamicTableService.Components
 {
     public class QueryBuilder
@@ -12,6 +18,7 @@ namespace DynamicTableService.Components
         private bool _orderByDesc = false;
         private string? _groupByColumn;
         private Tuple<int, int>? _offsetFetch;
+        private SelectFunction? _selectFunction;
 
         private enum QueryType
         { Select, Insert, Update, Delete }
@@ -27,6 +34,7 @@ namespace DynamicTableService.Components
             _orderByDesc = false;
             _groupByColumn = null;
             _offsetFetch = null;
+            _selectFunction = null;
             _queryType = QueryType.Select;
             return this;
         }
@@ -60,6 +68,12 @@ namespace DynamicTableService.Components
         {
             _queryType = QueryType.Select;
             _selectColumns.AddRange(columns);
+            return this;
+        }
+
+        public QueryBuilder SearchFunction(SelectFunction? selectFunction)
+        {
+            _selectFunction = selectFunction;
             return this;
         }
 
@@ -103,7 +117,6 @@ namespace DynamicTableService.Components
             return this;
         }
 
-
         public QueryBuilder Update(Dictionary<string, object> values)
         {
             _queryType = QueryType.Update;
@@ -126,12 +139,59 @@ namespace DynamicTableService.Components
 
         private string BuildSelect()
         {
-            string selectClause = _selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*";
+            string selectClause = _selectFunction == null
+                ? (_selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*")
+                : getSpecificSearchClause();
             string whereClause = _whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", _whereConditions) : "";
             string groupByClause = !string.IsNullOrEmpty(_groupByColumn) ? $"GROUP BY {_groupByColumn}" : "";
             string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn} {(_orderByDesc ? "DESC" : "")}" : "";
             string offsetFetchClause = _offsetFetch != null ? $"OFFSET {_offsetFetch.Item1} ROWS FETCH NEXT {_offsetFetch.Item2} ROWS ONLY" : "";
             return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause} {offsetFetchClause}";
+        }
+
+        private string getSpecificSearchClauseByFName(string fName, bool notZeroParams = true)
+        {
+            string str = "";
+            if (_selectColumns.Count > 0)
+            {
+                foreach (var column in _selectColumns)
+                {
+                    str += $" {fName}({column}) AS {column} ";
+                }
+            }
+            else if (notZeroParams == false)
+            {
+                str = $"{fName}(*)";
+            }
+            else
+            {
+                throw new ArgumentException($"It needs to be > 0 selected fields for {fName}()");
+            }
+            return str;
+        }
+
+        private string getSpecificSearchClause()
+        {
+            switch (_selectFunction)
+            {
+                case SelectFunction.Count:
+                    return getSpecificSearchClauseByFName("COUNT", false);
+
+                case SelectFunction.Sum:
+                    return getSpecificSearchClauseByFName("SUM", true);
+
+                case SelectFunction.Avg:
+                    return getSpecificSearchClauseByFName("AVG", true);
+
+                case SelectFunction.Min:
+                    return getSpecificSearchClauseByFName("MIN", true);
+
+                case SelectFunction.Max:
+                    return getSpecificSearchClauseByFName("MAX", true);
+
+                default:
+                    return (_selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*");
+            }
         }
 
         private string BuildUpdate()

@@ -32,6 +32,7 @@
         public List<Dictionary<string, object>> Select(
             string tableName,
             List<string>? columnNames = null,
+            SelectFunction? selectFunction = null,
             List<WhereCondition>? whereConditions = null,
             string? groupByColumnName = null,
             string? orderByColumnName = null,
@@ -39,7 +40,7 @@
             Tuple<int, int>? offsetAndFetch = null
         )
         {
-            queryBuilder.ResetOptions().Table(tableName).Select(columnNames?.ToArray() ?? new string[0]);
+            queryBuilder.ResetOptions().Table(tableName).Select(columnNames?.ToArray() ?? new string[0]).SearchFunction(selectFunction);
             if (whereConditions != null) whereConditions.ForEach(condition => queryBuilder.Where(condition));
             if (groupByColumnName != null) queryBuilder.GroupBy(groupByColumnName);
             if (orderByColumnName != null) queryBuilder.OrderBy(orderByColumnName, orderByDescend ?? false);
