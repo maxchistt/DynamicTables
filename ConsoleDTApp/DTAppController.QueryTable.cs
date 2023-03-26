@@ -93,7 +93,7 @@ namespace ConsoleDTApp
 
                 ///
 
-                ConditionOperator conditionOperator;
+                ConditionOperator conditionOperator = ConditionOperator.Equal;
                 ConditionOperator? op = null;
                 while (op == null)
                 {
