@@ -34,13 +34,13 @@ namespace DynamicTableService
             }
             else
             {
-                throw new Exception("No values in WHERE condition");
+                throw new Exception("No values in WHERE condition params");
             }
 
             _operator = op;
         }
 
-        public WhereCondition(string column, string conditionOperator, params object[] values) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, values) { }
+        public WhereCondition(string column, string conditionOperator, params object[] values) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, values.Length > 1 ? values : values.Length > 0 ? values.ElementAt(0) : new object[0]) { }
 
         private string OperatorToString()
         {
@@ -70,6 +70,7 @@ namespace DynamicTableService
                 list.Add(objVal);
             }
 
+            if (list.Count == 0) throw new Exception("No values in WHERE condition object[]");
             return list.ToArray();
         }
 
