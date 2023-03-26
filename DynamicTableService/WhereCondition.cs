@@ -23,6 +23,8 @@ namespace DynamicTableService
         private List<object> _values = new();
         private ConditionOperator _operator = ConditionOperator.Equal;
 
+        public WhereCondition(string column, string conditionOperator, IEnumerable<object> valuesList) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, valuesList) { }
+
         public WhereCondition(string column, ConditionOperator op, IEnumerable<object> valuesList)
         {
             _column = column;
