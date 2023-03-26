@@ -33,7 +33,7 @@ namespace DynamicTableService
             }
             else
             {
-                throw new Exception("No values in WHERE condition IEnumerable<object> valuesList");
+                throw new ArgumentException("No values in WHERE condition IEnumerable<object> valuesList");
             }
 
             _operator = op;
