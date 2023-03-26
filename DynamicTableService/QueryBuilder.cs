@@ -9,7 +9,8 @@ namespace DynamicTableService.Components
         private List<string> _whereConditions;
         private Dictionary<string, object> _values;
         private string? _orderByColumn;
-        private string _groupByColumn;
+        private string? _groupByColumn;
+        private Tuple<int, int>? _offsetFetch;
 
         private enum QueryType
         { Select, Insert, Update, Delete }
@@ -22,6 +23,8 @@ namespace DynamicTableService.Components
             _whereConditions = new List<string>();
             _values = new Dictionary<string, object>();
             _orderByColumn = null;
+            _groupByColumn = null;
+            _offsetFetch = null;
             _queryType = QueryType.Select;
             return this;
         }
@@ -91,6 +94,13 @@ namespace DynamicTableService.Components
             return this;
         }
 
+        public QueryBuilder offsetFetch(int offset, int fetch)
+        {
+            _offsetFetch = new(offset, fetch);
+            return this;
+        }
+
+
         public QueryBuilder Update(Dictionary<string, object> values)
         {
             _queryType = QueryType.Update;
@@ -117,7 +127,8 @@ namespace DynamicTableService.Components
             string whereClause = _whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", _whereConditions) : "";
             string groupByClause = !string.IsNullOrEmpty(_groupByColumn) ? $"GROUP BY {_groupByColumn}" : "";
             string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn}" : "";
-            return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause}";
+            string offsetFetchClause = _offsetFetch != null ? $"OFFSET {_offsetFetch.Item1} ROWS FETCH NEXT {_offsetFetch.Item2} ROWS ONLY" : "";
+            return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause} {offsetFetchClause}";
         }
 
         private string BuildUpdate()
