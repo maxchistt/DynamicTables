@@ -17,40 +17,48 @@ namespace DynamicTableService
         };
 
         private string _column = "col1";
-        private object _value;
+        private object[] _values = new object[0];
         private ConditionOperator _operator = ConditionOperator.Equal;
 
-        public WhereCondition(string column, ConditionOperator op, object value)
+        public WhereCondition(string column, ConditionOperator op, params object[] values)
         {
             _column = column;
-            _value = value;
+
+            if (values.Length > 1)
+            {
+                _values = values;
+            }
+            else if (values.Length == 1)
+            {
+                _values = this.GetObjectListFromObject(values[0]);
+            }
+            else
+            {
+                throw new Exception("No values in WHERE condition");
+            }
+
             _operator = op;
         }
 
-        public WhereCondition(string column, string conditionOperator, object value)
-        {
-            _column = column;
-            _value = value;
-            _operator = ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key;
-        }
+        public WhereCondition(string column, string conditionOperator, params object[] values) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, values) { }
 
         private string OperatorToString()
         {
             return ConditionOperatorsStrings[_operator];
         }
 
-        private List<object>? ValueToObjectList()
+        private object[] GetObjectListFromObject(object objVal)
         {
             var list = new List<object>();
 
-            if (_value is IEnumerable enumerable)
+            if (objVal is IEnumerable enumerable)
             {
                 foreach (var val in enumerable)
                 {
                     list.Add(val);
                 }
             }
-            else if (_value is System.Runtime.CompilerServices.ITuple tuple)
+            else if (objVal is System.Runtime.CompilerServices.ITuple tuple)
             {
                 for (int i = 0; i < tuple.Length; i++)
                 {
@@ -59,10 +67,10 @@ namespace DynamicTableService
             }
             else
             {
-                return null;
+                list.Add(objVal);
             }
 
-            return list;
+            return list.ToArray();
         }
 
         private string ValueToString()
@@ -71,12 +79,12 @@ namespace DynamicTableService
             switch (_operator)
             {
                 case ConditionOperator.In:
-                    var list = ValueToObjectList();
-                    if (list == null) throw new ArgumentException("Value should be enumerable or tuple if condition needs few values", "object value");
-                    resStr = $"({string.Join(", ", list.Select(Components.QueryBuilder.GetValueString))})";
+
+                    if (_values.Length <= 1) throw new ArgumentException("Value should be enumerable or tuple if condition needs few values", "object value");
+                    resStr = $"({string.Join(", ", _values.Select(Components.QueryBuilder.GetValueString))})";
                     break;
                 default:
-                    resStr = Components.QueryBuilder.GetValueString(_value);
+                    resStr = Components.QueryBuilder.GetValueString(_values[0]);
                     break;
             }
             return resStr;
