@@ -9,6 +9,7 @@ namespace DynamicTableService.Components
         private List<string> _whereConditions;
         private Dictionary<string, object> _values;
         private string? _orderByColumn;
+        private string _groupByColumn;
 
         private enum QueryType
         { Select, Insert, Update, Delete }
@@ -78,6 +79,12 @@ namespace DynamicTableService.Components
             return Where(new WhereCondition(column, conditionOperator, conditionValue).ToString());
         }
 
+        public QueryBuilder GroupBy(string column)
+        {
+            _groupByColumn = column;
+            return this;
+        }
+
         public QueryBuilder OrderBy(string column)
         {
             _orderByColumn = column;
@@ -108,8 +115,9 @@ namespace DynamicTableService.Components
         {
             string selectClause = _selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*";
             string whereClause = _whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", _whereConditions) : "";
+            string groupByClause = !string.IsNullOrEmpty(_groupByColumn) ? $"GROUP BY {_groupByColumn}" : "";
             string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn}" : "";
-            return $"SELECT {selectClause} FROM {_tableName} {whereClause} {orderByClause}";
+            return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause}";
         }
 
         private string BuildUpdate()
