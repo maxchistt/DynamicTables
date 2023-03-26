@@ -3,7 +3,7 @@
 namespace DynamicTableService
 {
     public enum ConditionOperator
-    { Equal, GreaterThan, LessThan, GreaterThanOrEqual, LessThanOrEqual, NotEqual, In, Between }
+    { Equal, GreaterThan, LessThan, GreaterThanOrEqual, LessThanOrEqual, NotEqual, In, Between, Like }
 
     public struct WhereCondition
     {
@@ -15,7 +15,8 @@ namespace DynamicTableService
             { ConditionOperator.LessThanOrEqual, "<="},
             { ConditionOperator.NotEqual, "!="},
             { ConditionOperator.In, "IN"},
-            { ConditionOperator.Between,"BETWEEN"}
+            { ConditionOperator.Between,"BETWEEN"},
+            { ConditionOperator.Like,"LIKE"}
         };
 
         private string _column = "col1";
@@ -55,7 +56,9 @@ namespace DynamicTableService
             _operator = op;
         }
 
-        public WhereCondition(string column, string conditionOperator, object value, params object[] otherValues) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, value, otherValues) { }
+        public WhereCondition(string column, string conditionOperator, object value, params object[] otherValues) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, value, otherValues)
+        {
+        }
 
         private string OperatorToString()
         {
@@ -102,6 +105,21 @@ namespace DynamicTableService
                 case ConditionOperator.Between:
                     if (_values.Count < 2) throw new ArgumentException("WhereCondition needs few values");
                     resStr = $"{_values[0]} AND {_values[1]}";
+                    break;
+
+                case ConditionOperator.Like:
+                    string search = _values[0].ToString() ?? "";
+                    var specSimbols = new char[] { '%', '[', ']', '_' };
+                    bool containsSpecSimbols = false;
+                    foreach (var simbol in specSimbols)
+                    {
+                        if (search.Contains(simbol))
+                        {
+                            containsSpecSimbols = true;
+                            break;
+                        }
+                    }
+                    resStr = containsSpecSimbols ? $"'{search}'" : $"'%{search}%'";
                     break;
 
                 default:
