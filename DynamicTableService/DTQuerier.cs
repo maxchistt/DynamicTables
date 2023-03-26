@@ -35,13 +35,14 @@
             List<WhereCondition>? whereConditions = null,
             string? groupByColumnName = null,
             string? orderByColumnName = null,
+            bool? orderByDescend = null,
             Tuple<int, int>? offsetAndFetch = null
         )
         {
             queryBuilder.ResetOptions().Table(tableName).Select(columnNames?.ToArray() ?? new string[0]);
             if (whereConditions != null) whereConditions.ForEach(condition => queryBuilder.Where(condition));
             if (groupByColumnName != null) queryBuilder.GroupBy(groupByColumnName);
-            if (orderByColumnName != null) queryBuilder.OrderBy(orderByColumnName);
+            if (orderByColumnName != null) queryBuilder.OrderBy(orderByColumnName, orderByDescend ?? false);
             if (offsetAndFetch != null) queryBuilder.offsetFetch(offsetAndFetch.Item1, offsetAndFetch.Item2);
             string sql = queryBuilder.Build();
 

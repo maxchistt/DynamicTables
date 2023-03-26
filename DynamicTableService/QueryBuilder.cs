@@ -9,6 +9,7 @@ namespace DynamicTableService.Components
         private List<string> _whereConditions;
         private Dictionary<string, object> _values;
         private string? _orderByColumn;
+        private bool _orderByDesc = false;
         private string? _groupByColumn;
         private Tuple<int, int>? _offsetFetch;
 
@@ -23,6 +24,7 @@ namespace DynamicTableService.Components
             _whereConditions = new List<string>();
             _values = new Dictionary<string, object>();
             _orderByColumn = null;
+            _orderByDesc = false;
             _groupByColumn = null;
             _offsetFetch = null;
             _queryType = QueryType.Select;
@@ -88,9 +90,10 @@ namespace DynamicTableService.Components
             return this;
         }
 
-        public QueryBuilder OrderBy(string column)
+        public QueryBuilder OrderBy(string column, bool byDescend = false)
         {
             _orderByColumn = column;
+            _orderByDesc = byDescend;
             return this;
         }
 
@@ -126,7 +129,7 @@ namespace DynamicTableService.Components
             string selectClause = _selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*";
             string whereClause = _whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", _whereConditions) : "";
             string groupByClause = !string.IsNullOrEmpty(_groupByColumn) ? $"GROUP BY {_groupByColumn}" : "";
-            string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn}" : "";
+            string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn} {(_orderByDesc ? "DESC" : "")}" : "";
             string offsetFetchClause = _offsetFetch != null ? $"OFFSET {_offsetFetch.Item1} ROWS FETCH NEXT {_offsetFetch.Item2} ROWS ONLY" : "";
             return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause} {offsetFetchClause}";
         }
