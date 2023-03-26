@@ -21,6 +21,22 @@ namespace DynamicTableService
         private List<object> _values = new();
         private ConditionOperator _operator = ConditionOperator.Equal;
 
+        public WhereCondition(string column, ConditionOperator op, IEnumerable<object> valuesList)
+        {
+            _column = column;
+
+            if (valuesList.Count() > 0)
+            {
+                _values.AddRange(valuesList);
+            }
+            else
+            {
+                throw new Exception("No values in WHERE condition IEnumerable<object> valuesList");
+            }
+
+            _operator = op;
+        }
+
         public WhereCondition(string column, ConditionOperator op, object value, params object[] otherValues)
         {
             _column = column;
