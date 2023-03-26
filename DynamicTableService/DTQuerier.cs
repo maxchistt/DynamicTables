@@ -29,10 +29,11 @@
             executeSQL(queryBuilder.Build());
         }
 
-        public List<Dictionary<string, object>> Select(string tableName, List<string>? columnNames = null, List<WhereCondition>? whereConditions = null, string? orderByColumnName = null)
+        public List<Dictionary<string, object>> Select(string tableName, List<string>? columnNames = null, List<WhereCondition>? whereConditions = null, string? groupByColumnName = null, string? orderByColumnName = null)
         {
             queryBuilder.ResetOptions().Table(tableName).Select(columnNames?.ToArray() ?? new string[0]);
             if (whereConditions != null) whereConditions.ForEach(condition => queryBuilder.Where(condition));
+            if (groupByColumnName != null) queryBuilder.GroupBy(groupByColumnName);
             if (orderByColumnName != null) queryBuilder.OrderBy(orderByColumnName);
             string sql = queryBuilder.Build();
 
