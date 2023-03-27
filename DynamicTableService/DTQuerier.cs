@@ -31,7 +31,7 @@
 
         public List<Dictionary<string, object>> Select(
             string tableName,
-            List<(string?,SelectFunction?)>? columnNames = null,
+            List<SelectColumnParam>? columnNames = null,
             
             List<WhereCondition>? whereConditions = null,
             string? groupByColumnName = null,

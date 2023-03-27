@@ -1,18 +1,11 @@
-﻿using System.Data.Common;
-using System.Text.RegularExpressions;
-
-namespace DynamicTableService
-{
-    public enum SelectFunction
-    { Count, Avg, Sum, Min, Max }
-}
+﻿using System.Text.RegularExpressions;
 
 namespace DynamicTableService.Components
 {
     public class QueryBuilder
     {
         private string _tableName;
-        private List<(string?, SelectFunction?)> _selectColumns;
+        private List<SelectColumnParam> _selectColumns;
         private List<string> _whereConditions;
         private Dictionary<string, object> _values;
         private string? _orderByColumn;
@@ -63,7 +56,7 @@ namespace DynamicTableService.Components
             return this;
         }
 
-        public QueryBuilder Select(List<(string?, SelectFunction?)>? selectColumns)
+        public QueryBuilder Select(List<SelectColumnParam>? selectColumns)
         {
             _queryType = QueryType.Select;
             _selectColumns.AddRange(selectColumns ?? new());
@@ -134,54 +127,12 @@ namespace DynamicTableService.Components
 
         private string BuildSelect()
         {
-            string selectClause = _selectColumns.Count > 0 ? string.Join(", ", _selectColumns.Select(col => getFunctionalSearchParametr(col))) : "*";
+            string selectClause = _selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*";
             string whereClause = _whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", _whereConditions) : "";
             string groupByClause = !string.IsNullOrEmpty(_groupByColumn) ? $"GROUP BY {_groupByColumn}" : "";
             string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn} {(_orderByDesc ? "DESC" : "")}" : "";
             string offsetFetchClause = _offsetFetch != null ? $"OFFSET {_offsetFetch.Item1} ROWS FETCH NEXT {_offsetFetch.Item2} ROWS ONLY" : "";
             return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause} {offsetFetchClause}";
-        }
-
-        private string getFunctionalSearchParametr((string?, SelectFunction?) searchColParam)
-        {
-            string? colname = searchColParam.Item1;
-            SelectFunction? selectFunction = searchColParam.Item2;
-
-            if (selectFunction != null && selectFunction != SelectFunction.Count && (colname == null || colname == "*"))
-            {
-                throw new ArgumentException($"It needs to be > 0 selected fields for {getSelFunctionName(selectFunction)}()");
-                return string.Empty;
-            }
-            else
-            {
-                return selectFunction != null
-                    ? $" {getSelFunctionName(selectFunction)}({colname ?? "*"}) "//+$"AS {colname} "
-                    : $" {colname ?? "*"} ";
-            }
-        }
-
-        private string getSelFunctionName(SelectFunction? selectFunctionEnum)
-        {
-            switch (selectFunctionEnum)
-            {
-                case SelectFunction.Count:
-                    return "COUNT";
-
-                case SelectFunction.Sum:
-                    return "SUM";
-
-                case SelectFunction.Avg:
-                    return "AVG";
-
-                case SelectFunction.Min:
-                    return "MIN";
-
-                case SelectFunction.Max:
-                    return "MAX";
-
-                default:
-                    return string.Empty;
-            }
         }
 
         private string BuildUpdate()

@@ -37,7 +37,7 @@
             return ConditionOperatorsStrings[_operator];
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             return $"{_column} {OperatorToString(_operator)} {Components.QueryBuilder.GetValueString(_value)}";
         }
