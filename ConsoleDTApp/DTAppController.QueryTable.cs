@@ -55,11 +55,46 @@ namespace ConsoleDTApp
 
         private void printTable(List<Dictionary<string, object>> table)
         {
+            // add table name to printstring
+            List<string> colKeys = dtManager.Scaner.getColsKeys(chosenTable);
             string tableStr = $"Table '{chosenTable}'\n";
+
+            // determine the maximum lengths in columns
+            Dictionary<string, int> maxLengths = new();
+            colKeys.ForEach(colKey =>
+            {
+                maxLengths[colKey] = colKey.Length + 1;
+            });
             table.ForEach(row =>
             {
-                tableStr += string.Join(" | ", row) + "\n";
+                colKeys.ForEach(colKey =>
+                {
+                    int valLen = row[colKey].ToString()?.Length ?? 0;
+                    if (valLen >= maxLengths[colKey]) maxLengths[colKey] = valLen + 1;
+                });
             });
+
+            // add table header to printstring
+            tableStr += string.Join("| ", colKeys.Select(key => key + new string(' ', maxLengths[key] - key.Length)));
+            tableStr += "\n";
+            tableStr += new string('-', colKeys.Count * 2 + maxLengths.Values.Sum());
+            tableStr += "\n";
+
+            // add table body to printstring
+            table.ForEach(row =>
+            {
+                List<string> rowValues = new();
+                colKeys.ForEach(colKey =>
+                {
+                    string valueStr = row.ContainsKey(colKey) ? row[colKey].ToString() ?? "" : "";
+                    valueStr += new string(' ', maxLengths[colKey] - valueStr.Length);
+                    rowValues.Add(valueStr);
+                });
+                tableStr += string.Join("| ", rowValues);
+                tableStr += "\n";
+            });
+
+            // print
             view.printMsg(tableStr);
         }
 
