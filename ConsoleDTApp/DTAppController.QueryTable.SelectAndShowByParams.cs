@@ -128,6 +128,21 @@ namespace ConsoleDTApp
 
             string? groupByColumnName = null;
 
+            while (groupByColumnName == null)
+            {
+                if (view.getChoice(new string[] { "Yes", "No" }, "Add GROUP BY query?") != "Yes")
+                {
+                    groupByColumnName = null;
+                    break;
+                }
+
+                groupByColumnName = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field to SELECT. Press enter to end/skip selection.");
+                if (groupByColumnName == "")
+                {
+                    groupByColumnName = null;
+                }
+            }
+
             ///////// orderByColumnName orderByDescend
 
             string? orderByColumnName = null;
