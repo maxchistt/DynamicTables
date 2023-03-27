@@ -30,56 +30,33 @@ namespace ConsoleDTApp
             ///////// whereConditions
 
             List<WhereCondition>? whereConditions = null;
-            bool breakWhereConditions = false;
-            while (!breakWhereConditions)
-            {
-                if (view.getChoice(new string[] { "Yes", "No" }, "Add another WHERE condition?") != "Yes")
-                {
-                    breakWhereConditions = true;
-                    break;
-                }
 
-                string column = "";
-                while (column == "")
-                {
-                    column = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field for WHERE condition");
-                    if (column == "")
-                    {
-                        breakWhereConditions = true;
-                        break;
-                    }
-                }
-                if (breakWhereConditions) break;
+            while (true)
+            {
+                if (view.getChoice(new string[] { "Yes", "No" }, "Add another WHERE condition?") != "Yes") break;
+
+                ///
+
+                string column = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field for WHERE condition");
+                if (column == "") break;
 
                 ///
 
                 ConditionOperator conditionOperator = ConditionOperator.Equal;
-                ConditionOperator? op = null;
-                while (op == null)
-                {
-                    op = view.getChoiceEnum<ConditionOperator>("Choose operator for WHERE condition");
-                    if (op == null)
-                    {
-                        breakWhereConditions = true;
-                        break;
-                    }
-                    conditionOperator = op ?? ConditionOperator.Equal;
-                }
-                if (breakWhereConditions) break;
+                ConditionOperator? op = view.getChoiceEnum<ConditionOperator>("Choose operator for WHERE condition");
+                if (op == null) break;
+                conditionOperator = op ?? ConditionOperator.Equal;
 
                 ///
 
                 List<object> valuesList = new();
-                bool repeatFieldsChoose = true;
-                while (repeatFieldsChoose)
+                while (true)
                 {
                     string enterType = view.getChoice(new string[] { "Number", "String", "Sql string" }, "What type whould you enter?");
-
                     string? valueStr = view.getStringname("Enter value:")?.Trim();
+
                     if (valueStr == null || valueStr == "")
                     {
-                        repeatFieldsChoose = false;
-                        breakWhereConditions = true;
                         break;
                     }
                     else
@@ -110,9 +87,9 @@ namespace ConsoleDTApp
                         view.printMsg("Values: " + string.Join(" , ", valuesList));
                     }
 
-                    if (view.getChoice(new string[] { "Yes", "No" }, "Add another value for this condition?") != "Yes") repeatFieldsChoose = false;
+                    if (view.getChoice(new string[] { "Yes", "No" }, "Add another value for this condition?") != "Yes") break;
                 }
-                if (breakWhereConditions) break;
+                if (valuesList.Count == 0) break;
 
                 ///
 
