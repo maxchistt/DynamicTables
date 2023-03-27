@@ -3,7 +3,7 @@
     internal partial class DTAppController
     {
         private enum todoMain
-        { ShowTablesList, ShowTableHeader, QueryTable, CreateTable, EditTable, AutoFill };
+        { ShowTable, , QueryTable, ShowTablesList, ShowTableHeader, CreateTable, EditTable, AutoFill };
 
         public bool chooseToDoMain()
         {
@@ -17,6 +17,12 @@
 
                 case todoMain.ShowTableHeader:
                     showTableHeader();
+                    break;
+
+                case todoMain.ShowTable:
+                    bool tableCosen = chooseTable();
+                    if (!tableCosen) break;
+                    showTable();
                     break;
 
                 case todoMain.ShowTablesList:
