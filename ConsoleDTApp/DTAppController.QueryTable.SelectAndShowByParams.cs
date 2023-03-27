@@ -11,16 +11,14 @@ namespace ConsoleDTApp
             ///////// columnNames
 
             List<string>? columnNames = null;
-            string chosenField = "*";
-            while (chosenField != "")
+            while (true)
             {
                 if (view.getChoice(new string[] { "Yes", "No" }, "Add another field to SELECT query?") != "Yes")
                 {
-                    chosenField = "";
                     break;
                 }
 
-                chosenField = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field to SELECT. Press enter to end/skip selection.");
+                string chosenField = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field to SELECT. Press enter to end/skip selection.");
                 if (chosenField != "")
                 {
                     if (columnNames == null) columnNames = new();
