@@ -38,13 +38,13 @@ namespace ConsoleDTApp
                 ///
 
                 string column = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field for WHERE condition");
-                if (column == "") break;
+                if (column == "") continue;
 
                 ///
 
                 ConditionOperator conditionOperator = ConditionOperator.Equal;
                 ConditionOperator? op = view.getChoiceEnum<ConditionOperator>("Choose operator for WHERE condition");
-                if (op == null) break;
+                if (op == null) continue;
                 conditionOperator = op ?? ConditionOperator.Equal;
 
                 ///
@@ -52,6 +52,8 @@ namespace ConsoleDTApp
                 List<object> valuesList = new();
                 while (true)
                 {
+                    if (view.getChoice(new string[] { "Yes", "No" }, "Add another value for this WHERE condition?") != "Yes") break;
+
                     string enterType = view.getChoice(new string[] { "Number", "String", "Sql string" }, "What type whould you enter?");
                     string? valueStr = view.getStringname("Enter value:")?.Trim();
 
@@ -86,10 +88,8 @@ namespace ConsoleDTApp
 
                         view.printMsg("Values: " + string.Join(" , ", valuesList));
                     }
-
-                    if (view.getChoice(new string[] { "Yes", "No" }, "Add another value for this condition?") != "Yes") break;
                 }
-                if (valuesList.Count == 0) break;
+                if (valuesList.Count == 0) continue;
 
                 ///
 
