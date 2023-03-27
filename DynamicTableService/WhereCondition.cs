@@ -22,11 +22,13 @@ namespace DynamicTableService
         private string _column = "col1";
         private List<object> _values = new();
         private ConditionOperator _operator = ConditionOperator.Equal;
+        private bool _autoQuotes = true;
 
-        public WhereCondition(string column, string conditionOperator, IEnumerable<object> valuesList) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, valuesList) { }
+        public WhereCondition(string column, string conditionOperator, IEnumerable<object> valuesList, bool autoQuotes = true) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, valuesList, autoQuotes) { }
 
-        public WhereCondition(string column, ConditionOperator op, IEnumerable<object> valuesList)
+        public WhereCondition(string column, ConditionOperator op, IEnumerable<object> valuesList, bool autoQuotes = true)
         {
+            _autoQuotes = autoQuotes;
             _column = column;
 
             if (valuesList.Count() > 0)
@@ -101,7 +103,8 @@ namespace DynamicTableService
             {
                 case ConditionOperator.In:
                     if (_values.Count < 2) throw new ArgumentException("WhereCondition needs few values");
-                    resStr = $"({string.Join(", ", _values.Select(Components.QueryBuilder.GetValueString))})";
+                    bool autoQuote = this._autoQuotes;
+                    resStr = $"({string.Join(", ", _values.Select(val => Components.QueryBuilder.GetValueString(val, autoQuote)))})";
                     break;
 
                 case ConditionOperator.Between:
@@ -125,7 +128,7 @@ namespace DynamicTableService
                     break;
 
                 default:
-                    resStr = Components.QueryBuilder.GetValueString(_values[0]);
+                    resStr = Components.QueryBuilder.GetValueString(_values[0], _autoQuotes);
                     break;
             }
             return resStr;

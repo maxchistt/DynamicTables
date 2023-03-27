@@ -158,9 +158,15 @@ namespace DynamicTableService.Components
 
         public static string GetValueString(object value)
         {
+            return GetValueString(value, true);
+        }
+        public static string GetValueString(object value, bool autoQuote = true)
+        {
             if (value is string)
             {
-                return Regex.IsMatch(value.ToString(), @"\p{IsCyrillic}") ? $"N'{value}'" : $"'{value}'";
+                return Regex.IsMatch(value.ToString(), @"\p{IsCyrillic}")
+                    ? (autoQuote ? $"N'{value}'" : $"{value}")
+                    : (autoQuote ? $"'{value}'" : $"{value}");
             }
             else if (value is null)
             {

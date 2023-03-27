@@ -75,7 +75,7 @@ namespace ConsoleDTApp
                 bool repeatFieldsChoose = true;
                 while (repeatFieldsChoose)
                 {
-                    bool enterStr = (view.getChoice(new string[] { "Number", "String" }, "What type whould you enter?") != "Number");
+                    string enterType = view.getChoice(new string[] { "Number", "String", "Sql string" }, "What type whould you enter?");
 
                     string? valueStr = view.getStringname("Enter value:")?.Trim();
                     if (valueStr == null || valueStr == "")
@@ -86,21 +86,27 @@ namespace ConsoleDTApp
                     }
                     else
                     {
-                        if (enterStr)
+                        switch (enterType)
                         {
-                            valuesList.Add(valueStr);
-                        }
-                        else
-                        {
-                            double valueDoubleParsed;
-                            if (double.TryParse(valueStr, out valueDoubleParsed))
-                            {
-                                valuesList.Add(valueDoubleParsed);
-                            }
-                            else
-                            {
-                                view.printMsg("numeric value wasnt parsed");
-                            }
+                            case "Number":
+                                double valueDoubleParsed;
+                                if (double.TryParse(valueStr, out valueDoubleParsed))
+                                {
+                                    valuesList.Add(valueDoubleParsed);
+                                }
+                                else
+                                {
+                                    view.printMsg("numeric value wasnt parsed");
+                                }
+                                break;
+
+                            case "Sql string":
+                                valuesList.Add(valueStr);
+                                break;
+
+                            default:
+                                valuesList.Add($"'{valueStr}'");
+                                break;
                         }
 
                         view.printMsg("Values: " + string.Join(" , ", valuesList));
@@ -112,7 +118,7 @@ namespace ConsoleDTApp
 
                 ///
 
-                WhereCondition cond = new WhereCondition(column, conditionOperator, valuesList);
+                WhereCondition cond = new WhereCondition(column, conditionOperator, valuesList, false);
 
                 if (whereConditions == null) whereConditions = new();
                 whereConditions.Add(cond);
