@@ -43,27 +43,6 @@ namespace DynamicTableService
             _operator = op;
         }
 
-        public WhereCondition(string column, ConditionOperator op, object value, params object[] otherValues)
-        {
-            _column = column;
-
-            if (otherValues.Length > 0)
-            {
-                _values.Add(value);
-                _values.AddRange(otherValues);
-            }
-            else
-            {
-                _values.AddRange(GetObjectListFromObject(value));
-            }
-
-            _operator = op;
-        }
-
-        public WhereCondition(string column, string conditionOperator, object value, params object[] otherValues) : this(column, ConditionOperatorsStrings.FirstOrDefault(v => v.Value == conditionOperator).Key, value, otherValues)
-        {
-        }
-
         private string OperatorToString()
         {
             return ConditionOperatorsStrings[_operator];

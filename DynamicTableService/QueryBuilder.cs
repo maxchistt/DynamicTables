@@ -74,18 +74,6 @@ namespace DynamicTableService.Components
             return Where(condition.ToString());
         }
 
-        /*
-        public QueryBuilder Where(string column, ConditionOperator conditionOperator, object conditionValue)
-        {
-            return Where(new WhereCondition(column, conditionOperator, conditionValue).ToString());
-        }
-
-        public QueryBuilder Where(string column, string conditionOperator, object conditionValue)
-        {
-            return Where(new WhereCondition(column, conditionOperator, conditionValue).ToString());
-        }
-        */
-
         public QueryBuilder GroupBy(string column)
         {
             _groupByColumn = column;
@@ -160,6 +148,7 @@ namespace DynamicTableService.Components
         {
             return GetValueString(value, true);
         }
+
         public static string GetValueString(object value, bool autoQuote = true)
         {
             if (value is string)
