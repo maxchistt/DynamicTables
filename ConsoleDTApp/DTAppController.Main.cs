@@ -3,7 +3,7 @@
     internal partial class DTAppController
     {
         private enum todoMain
-        { ShowTablesList, ShowTableHeader, QueryTable, CreateTable, EditTable };
+        { ShowTablesList, ShowTableHeader, QueryTable, CreateTable, EditTable, AutoFill };
 
         public bool chooseToDoMain()
         {
@@ -29,6 +29,10 @@
 
                 case todoMain.QueryTable:
                     queryTable();
+                    break;
+
+                case todoMain.AutoFill:
+                    autoFillTable();
                     break;
 
                 default:
