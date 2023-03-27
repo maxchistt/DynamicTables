@@ -137,12 +137,7 @@ namespace ConsoleDTApp
 
             var table = dtManager.Querier.Select(tableName, columnNames, whereConditions, groupByColumnName, orderByColumnName, orderByDescend, offsetAndFetch);
 
-            string tableStr = $"Table '{chosenTable}'\n";
-            table.ForEach(row =>
-            {
-                tableStr += string.Join(" | ", row) + "\n";
-            });
-            view.printMsg(tableStr);
+            printTable(table);
         }
     }
 }

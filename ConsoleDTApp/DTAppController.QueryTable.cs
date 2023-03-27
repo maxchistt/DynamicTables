@@ -50,7 +50,11 @@ namespace ConsoleDTApp
         public void showTable()
         {
             var table = dtManager.Querier.Select(chosenTable);
+            printTable(table);
+        }
 
+        private void printTable(List<Dictionary<string, object>> table)
+        {
             string tableStr = $"Table '{chosenTable}'\n";
             table.ForEach(row =>
             {
