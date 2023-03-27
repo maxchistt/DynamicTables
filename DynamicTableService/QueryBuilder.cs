@@ -13,6 +13,9 @@ namespace DynamicTableService.Components
         private string? _groupByColumn;
         private Tuple<int, int>? _offsetFetch;
 
+        // Убрать после слияния ветки git
+        private bool _groupByEnable = false;
+
         private enum QueryType
         { Select, Insert, Update, Delete }
 
@@ -118,7 +121,7 @@ namespace DynamicTableService.Components
         {
             string selectClause = _selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*";
             string whereClause = _whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", _whereConditions) : "";
-            string groupByClause = !string.IsNullOrEmpty(_groupByColumn) ? $"GROUP BY {_groupByColumn}" : "";
+            string groupByClause = !string.IsNullOrEmpty(_groupByColumn) && (_groupByEnable) ? $"GROUP BY {_groupByColumn}" : "";
             string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn} {(_orderByDesc ? "DESC" : "")}" : "";
             string offsetFetchClause = _offsetFetch != null ? $"OFFSET {_offsetFetch.Item1} ROWS FETCH NEXT {_offsetFetch.Item2} ROWS ONLY" : "";
             return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause} {offsetFetchClause}";
