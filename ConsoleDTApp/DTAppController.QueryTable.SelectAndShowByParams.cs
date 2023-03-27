@@ -14,18 +14,18 @@ namespace ConsoleDTApp
             string chosenField = "*";
             while (chosenField != "")
             {
-                chosenField = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Chose field to select. Press enter to end/skip selection.");
+                if (view.getChoice(new string[] { "Yes", "No" }, "Add another field to SELECT query?") != "Yes")
+                {
+                    chosenField = "";
+                    break;
+                }
+
+                chosenField = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field to SELECT. Press enter to end/skip selection.");
                 if (chosenField != "")
                 {
                     if (columnNames == null) columnNames = new();
                     columnNames.Add(chosenField);
-                    view.printMsg(string.Join(" & ", columnNames));
-
-                    if (view.getChoice(new string[] { "Yes", "No" }, "Add another field to select query?") != "Yes")
-                    {
-                        chosenField = "";
-                        break;
-                    }
+                    view.printMsg("Selected columns: " + string.Join(" | ", columnNames));
                 }
             }
 
@@ -35,7 +35,7 @@ namespace ConsoleDTApp
             bool breakWhereConditions = false;
             while (!breakWhereConditions)
             {
-                if (view.getChoice(new string[] { "Yes", "No" }, "Add another where condition?") != "Yes")
+                if (view.getChoice(new string[] { "Yes", "No" }, "Add another WHERE condition?") != "Yes")
                 {
                     breakWhereConditions = true;
                     break;
@@ -44,7 +44,7 @@ namespace ConsoleDTApp
                 string column = "";
                 while (column == "")
                 {
-                    column = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Chose field for where condition");
+                    column = view.getChoice(dtManager.Scaner.getColsKeys(chosenTable).ToArray(), "Choose field for WHERE condition");
                     if (column == "")
                     {
                         breakWhereConditions = true;
@@ -59,7 +59,7 @@ namespace ConsoleDTApp
                 ConditionOperator? op = null;
                 while (op == null)
                 {
-                    op = view.getChoiceEnum<ConditionOperator>("Chose operator for where condition");
+                    op = view.getChoiceEnum<ConditionOperator>("Choose operator for WHERE condition");
                     if (op == null)
                     {
                         breakWhereConditions = true;
@@ -77,7 +77,7 @@ namespace ConsoleDTApp
                 {
                     bool enterStr = (view.getChoice(new string[] { "Number", "String" }, "What type whould you enter?") != "Number");
 
-                    string? valueStr = view.getStringname("Enter value")?.Trim();
+                    string? valueStr = view.getStringname("Enter value:")?.Trim();
                     if (valueStr == null || valueStr == "")
                     {
                         repeatFieldsChoose = false;
@@ -103,7 +103,7 @@ namespace ConsoleDTApp
                             }
                         }
 
-                        view.printMsg(string.Join(" & ", valuesList));
+                        view.printMsg("Values: " + string.Join(" , ", valuesList));
                     }
 
                     if (view.getChoice(new string[] { "Yes", "No" }, "Add another value for this condition?") != "Yes") repeatFieldsChoose = false;
@@ -116,6 +116,8 @@ namespace ConsoleDTApp
 
                 if (whereConditions == null) whereConditions = new();
                 whereConditions.Add(cond);
+
+                view.printMsg("Conditions: " + string.Join(" AND ", whereConditions.Select(cond => cond.ToString())));
             }
 
             ///////// groupByColumnName
