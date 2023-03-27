@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Data.Common;
+using System.Text.RegularExpressions;
 
 namespace DynamicTableService
 {
@@ -11,14 +12,13 @@ namespace DynamicTableService.Components
     public class QueryBuilder
     {
         private string _tableName;
-        private List<string> _selectColumns;
+        private List<(string?, SelectFunction?)> _selectColumns;
         private List<string> _whereConditions;
         private Dictionary<string, object> _values;
         private string? _orderByColumn;
         private bool _orderByDesc = false;
         private string? _groupByColumn;
         private Tuple<int, int>? _offsetFetch;
-        private SelectFunction? _selectFunction;
 
         private enum QueryType
         { Select, Insert, Update, Delete }
@@ -27,14 +27,13 @@ namespace DynamicTableService.Components
 
         public QueryBuilder ResetOptions()
         {
-            _selectColumns = new List<string>();
+            _selectColumns = new();
             _whereConditions = new List<string>();
             _values = new Dictionary<string, object>();
             _orderByColumn = null;
             _orderByDesc = false;
             _groupByColumn = null;
             _offsetFetch = null;
-            _selectFunction = null;
             _queryType = QueryType.Select;
             return this;
         }
@@ -64,18 +63,14 @@ namespace DynamicTableService.Components
             return this;
         }
 
-        public QueryBuilder Select(params string[] columns)
+        public QueryBuilder Select(List<(string?, SelectFunction?)>? selectColumns)
         {
             _queryType = QueryType.Select;
-            _selectColumns.AddRange(columns);
+            _selectColumns.AddRange(selectColumns ?? new());
             return this;
         }
 
-        public QueryBuilder SearchFunction(SelectFunction? selectFunction)
-        {
-            _selectFunction = selectFunction;
-            return this;
-        }
+
 
         public QueryBuilder Where(string sql_full_condition)
         {
@@ -139,9 +134,7 @@ namespace DynamicTableService.Components
 
         private string BuildSelect()
         {
-            string selectClause = _selectFunction == null
-                ? (_selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*")
-                : getSpecificSearchClause();
+            string selectClause = _selectColumns.Count > 0 ? string.Join(", ", _selectColumns.Select(col => getFunctionalSearchParametr(col))) : "*";
             string whereClause = _whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", _whereConditions) : "";
             string groupByClause = !string.IsNullOrEmpty(_groupByColumn) ? $"GROUP BY {_groupByColumn}" : "";
             string orderByClause = !string.IsNullOrEmpty(_orderByColumn) ? $"ORDER BY {_orderByColumn} {(_orderByDesc ? "DESC" : "")}" : "";
@@ -149,48 +142,45 @@ namespace DynamicTableService.Components
             return $"SELECT {selectClause} FROM {_tableName} {whereClause} {groupByClause} {orderByClause} {offsetFetchClause}";
         }
 
-        private string getSpecificSearchClauseByFName(string fName, bool notZeroParams = true)
+        private string getFunctionalSearchParametr((string?, SelectFunction?) searchColParam)
         {
-            string str = "";
-            if (_selectColumns.Count > 0)
+            string? colname = searchColParam.Item1;
+            SelectFunction? selectFunction = searchColParam.Item2;
+
+            if (selectFunction != null && selectFunction != SelectFunction.Count && (colname == null || colname == "*"))
             {
-                foreach (var column in _selectColumns)
-                {
-                    str += $" {fName}({column}) AS {column} ";
-                }
-            }
-            else if (notZeroParams == false)
-            {
-                str = $"{fName}(*)";
+                throw new ArgumentException($"It needs to be > 0 selected fields for {getSelFunctionName(selectFunction)}()");
+                return string.Empty;
             }
             else
             {
-                throw new ArgumentException($"It needs to be > 0 selected fields for {fName}()");
+                return selectFunction != null
+                    ? $" {getSelFunctionName(selectFunction)}({colname ?? "*"}) "//+$"AS {colname} "
+                    : $" {colname ?? "*"} ";
             }
-            return str;
         }
 
-        private string getSpecificSearchClause()
+        private string getSelFunctionName(SelectFunction? selectFunctionEnum)
         {
-            switch (_selectFunction)
+            switch (selectFunctionEnum)
             {
                 case SelectFunction.Count:
-                    return getSpecificSearchClauseByFName("COUNT", false);
+                    return "COUNT";
 
                 case SelectFunction.Sum:
-                    return getSpecificSearchClauseByFName("SUM", true);
+                    return "SUM";
 
                 case SelectFunction.Avg:
-                    return getSpecificSearchClauseByFName("AVG", true);
+                    return "AVG";
 
                 case SelectFunction.Min:
-                    return getSpecificSearchClauseByFName("MIN", true);
+                    return "MIN";
 
                 case SelectFunction.Max:
-                    return getSpecificSearchClauseByFName("MAX", true);
+                    return "MAX";
 
                 default:
-                    return (_selectColumns.Count > 0 ? string.Join(", ", _selectColumns) : "*");
+                    return string.Empty;
             }
         }
 
